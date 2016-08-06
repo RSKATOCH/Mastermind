@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -54,6 +55,7 @@ public class Permutations {
 				itr.remove();
 			}
 		}
+		
 		return words;
 	}
 
@@ -64,6 +66,7 @@ public class Permutations {
 				StringBuilder str = new StringBuilder(word);
 				newWords.add(str.insert(i, charAt).toString());
 			}
+			newWords.add(word + charAt);
 		}
 		newWords.add(String.valueOf(charAt));
 		newWords.addAll(words);
@@ -75,5 +78,10 @@ public class Permutations {
 		String end = str.substring(j);
 		return begin + c + end;
 	}
-
+	
+	private static String getSorted(String word) {
+		char[] wordArray = word.toCharArray();
+		Arrays.sort(wordArray);
+		return String.valueOf(wordArray);
+	}
 }

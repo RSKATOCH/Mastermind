@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
 
 public class MasterMind {
@@ -12,7 +13,7 @@ public class MasterMind {
 	private static List<String> allWords = new ArrayList<String>(); 
 	private Set<String> dictionary = new HashSet<String>();
 	private String gameWord;
-	
+
 	private String getSorted(String word) {
 		char[] wordArray = word.toCharArray();
 		Arrays.sort(wordArray);
@@ -23,15 +24,15 @@ public class MasterMind {
 		allWords = (List<String>) Files.readAllLines(Paths.get(filePath));
 	}
 	
-	private void getWordSet(List<String> readAllLines, int length) {
-		// TODO Auto-generated method stub
-		for(String line  : readAllLines) {
+	private void getWordSet(int length) {
+		for(String line  : allWords) {
 			if(line.length() == length && hasUniqueLetters(line)) {
 				dictionary.add(line.toUpperCase());
 			}
 		}
 	}
-
+	
+	/*Dictionary contains only unique characters*/
 	private boolean hasUniqueLetters(String line) {
 		for(char ch : line.toCharArray()) {
 			if(line.indexOf(ch) != line.lastIndexOf(ch)) {
@@ -39,14 +40,7 @@ public class MasterMind {
 			}
 		}
 		return true;
-	}
-	
-	private String processWord(String word) {
-		int numOfCommon = commonCharsCount(word);
-		return null;
-	}
-	
-	
+	}	
 	
 	private int commonCharsCount(String word) {
 		String unique = getUnique(word);
@@ -78,6 +72,7 @@ public class MasterMind {
 	}
 	
 	private Set<String> getPermutations(String word, int length) {
+		//System.out.println("Permutaions : " + Permutations.permutationFinder(word, length));
 		return Permutations.permutationFinder(word, length); 
 	}
 	
@@ -93,6 +88,9 @@ public class MasterMind {
 			if(!isPresent(permutations, dictWord)) {
 				itr.remove();
 			}
+		}
+		if(dictionary.contains(word)) {
+			dictionary.remove(word);
 		}
 	}
 	
@@ -118,6 +116,10 @@ public class MasterMind {
 		return false;
 	}
 
+	private boolean isValid(String word) {
+		return allWords.contains(word);
+	}
+	
 	private void generateGameWord() {
 		int randomNum =(int)(Math.random() * (dictionary.size() - 1));
 		List<String> list = new ArrayList<String>(dictionary);
@@ -127,18 +129,40 @@ public class MasterMind {
 	public static void main(String[] args) throws NumberFormatException, Exception {
 		MasterMind game = new MasterMind();
 		game.readFile(args[0]);
-		
-		game.getWordSet(allWords, Integer.parseInt(args[1]));
-		System.out.println(game.dictionary);
+		game.getWordSet(Integer.parseInt(args[1]));
+		Scanner sc = new Scanner(System.in);
 		game.generateGameWord();
-		System.out.println(game.gameWord);
+		System.out.println("I have guessed my word!!!" + game.gameWord);
+		String word = "";
+		boolean playerWon = true;
+		do{
+			System.out.println("What's your guess word?");
+			word = sc.next();
+			
+			while(!game.isValid(word)) {
+				System.out.println("Please Enter a valid word");
+				word = sc.next();
+			}
+			
+			System.out.println("Number of Matches : " + game.commonCharsCount(word));
+			String compGuessWord = game.generateGuessWord();
+			System.out.println("My guess word is : " + compGuessWord);
+			System.out.println("How many matches? Enter \"win\" if I guessed Correct");
+			String numOfCharsMatch = sc.next();
+			
+			if(numOfCharsMatch.equalsIgnoreCase("win")) {
+				System.out.println("I Won! Thank You for Playing!!!");
+				playerWon = false;
+				break;
+			}
+			
+			game.filterDictionary(compGuessWord, Integer.parseInt(numOfCharsMatch));	
+			//System.out.println(game.dictionary.size());
+			System.out.println();
+			
+		}while(!game.isWin(word));
 		
-		game.gameWord = "ABC";
-		
-		//System.out.println(game.commonCharsCount("BCD"));
-		
-		//Scanner sc = new Scanner(System.in);
-		//System.out.println(choose);
-		//System.out.println(Permutations.permutationFinder("ABC"));
+		if(playerWon)
+			System.out.println("YOU WON!!! Congratulations");
 	}
 }
