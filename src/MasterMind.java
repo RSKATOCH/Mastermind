@@ -3,11 +3,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 public class MasterMind {
 
+	private static List<String> allWords = new ArrayList<String>(); 
 	private Set<String> dictionary = new HashSet<String>();
 	private String gameWord;
 	
@@ -17,15 +19,15 @@ public class MasterMind {
 		return String.valueOf(wordArray);
 	}
 	
-	public void readFile(String filePath, int length) throws Exception {
-		getWordSet((ArrayList<String>) Files.readAllLines(Paths.get(filePath)), length);
+	public void readFile(String filePath) throws Exception {
+		allWords = (List<String>) Files.readAllLines(Paths.get(filePath));
 	}
 	
-	private void getWordSet(ArrayList<String> readAllLines, int length) {
+	private void getWordSet(List<String> readAllLines, int length) {
 		// TODO Auto-generated method stub
 		for(String line  : readAllLines) {
 			if(line.length() == length && hasUniqueLetters(line)) {
-				dictionary.add(line);
+				dictionary.add(line.toUpperCase());
 			}
 		}
 	}
@@ -75,10 +77,47 @@ public class MasterMind {
 		return dictionary.iterator().next();
 	}
 	
-	private void filterDictionary(String word, int numOfCharsMatch) {
-		
+	private Set<String> getPermutations(String word, int length) {
+		return Permutations.permutationFinder(word, length); 
 	}
 	
+	private void filterDictionary(String word, int numOfCharsMatch) {
+		if(numOfCharsMatch == 0) {
+			filterDictionary(word);
+			return;
+		}
+		Set<String> permutations = getPermutations(word, numOfCharsMatch);
+		Iterator<String> itr = dictionary.iterator();
+		while(itr.hasNext()) {
+			String dictWord = itr.next();
+			if(!isPresent(permutations, dictWord)) {
+				itr.remove();
+			}
+		}
+	}
+	
+	private void filterDictionary(String word) {
+		for(char ch : word.toCharArray()) {
+			Iterator<String> itr = dictionary.iterator();
+			while(itr.hasNext()) {
+				String dictWord = itr.next();
+				if(dictWord.contains(String.valueOf(ch))) {
+					itr.remove();
+				}
+			}
+		}
+	}
+
+	private boolean isPresent(Set<String> permutations, String dictWord) {
+		for(String perm : permutations) {
+			String regex = perm.replaceAll("", ".*");
+			if(dictWord.matches(regex)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private void generateGameWord() {
 		int randomNum =(int)(Math.random() * (dictionary.size() - 1));
 		List<String> list = new ArrayList<String>(dictionary);
@@ -86,13 +125,18 @@ public class MasterMind {
 	}
 	
 	public static void main(String[] args) throws NumberFormatException, Exception {
-		// TODO Auto-generated method stub
 		MasterMind game = new MasterMind();
+		game.readFile(args[0]);
 		
-		game.readFile(args[0], Integer.parseInt(args[1]));
+		game.getWordSet(allWords, Integer.parseInt(args[1]));
 		System.out.println(game.dictionary);
 		game.generateGameWord();
 		System.out.println(game.gameWord);
+		
+		game.gameWord = "ABC";
+		
+		//System.out.println(game.commonCharsCount("BCD"));
+		
 		//Scanner sc = new Scanner(System.in);
 		//System.out.println(choose);
 		//System.out.println(Permutations.permutationFinder("ABC"));
