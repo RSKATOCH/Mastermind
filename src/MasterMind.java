@@ -3,6 +3,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class MasterMind {
@@ -79,7 +80,9 @@ public class MasterMind {
 	}
 	
 	private void generateGameWord() {
-		
+		int randomNum =(int)(Math.random() * dictionary.size());
+		List<String> list = new ArrayList<String>(dictionary);
+		gameWord = list.get(randomNum);
 	}
 	
 	public static void main(String[] args) throws NumberFormatException, Exception {
@@ -88,6 +91,8 @@ public class MasterMind {
 		
 		game.readFile(args[0], Integer.parseInt(args[1]));
 		System.out.println(game.dictionary);
+		game.generateGameWord();
+		System.out.println(game.gameWord);
 		//Scanner sc = new Scanner(System.in);
 		//System.out.println(choose);
 		//System.out.println(Permutations.permutationFinder("ABC"));
