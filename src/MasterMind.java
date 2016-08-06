@@ -3,7 +3,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+
 import java.util.Scanner;
+
+import java.util.List;
+
 import java.util.Set;
 
 public class MasterMind {
@@ -82,9 +86,13 @@ public class MasterMind {
 	private void filterDictionary(String word, int numOfCharsMatch) {
 		
 	}
-	
+	private boolean isValid(String word) {
+		return dictionary.contains(word);
+	}
 	private void generateGameWord() {
-		
+		int randomNum =(int)(Math.random() * (dictionary.size() - 1));
+		List<String> list = new ArrayList<String>(dictionary);
+		gameWord = list.get(randomNum);
 	}
 	
 	public static void main(String[] args) throws NumberFormatException, Exception {
@@ -92,15 +100,27 @@ public class MasterMind {
 		MasterMind game = new MasterMind();
 		Scanner sc = new Scanner(System.in);
 		game.readFile(args[0], Integer.parseInt(args[1]));
+		
 		game.generateGameWord();
+		//System.out.println(game.gameWord);
 		String word="";
 		do{
 			/*User moves first*/
+			
 			word = sc.next();
-			System.out.println();
+			if(!game.isValid(word)) {
+				System.out.println("Please Enter a valid word");
+				continue;
+			}
+			System.out.println(game.commonCharsCount(word));
 			
-		}while(game.isWin(word));
+		}while(!game.isWin(word));
 			
+
+		/*System.out.println(game.dictionary);
+		game.generateGameWord();
+		System.out.println(game.gameWord);
+*/
 		//Scanner sc = new Scanner(System.in);
 		//System.out.println(choose);
 		//System.out.println(Permutations.permutationFinder("ABC"));
