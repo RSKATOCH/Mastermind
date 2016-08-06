@@ -76,16 +76,21 @@ public class MasterMind {
 		return Permutations.permutationFinder(word, length); 
 	}
 	
+	private Set<String> getLargerPermutations(String word, int length) {
+		//System.out.println("Permutaions : " + Permutations.permutationFinder(word, length));
+		return Permutations.permutationLargerFinder(word, length); 
+	}
 	private void filterDictionary(String word, int numOfCharsMatch) {
 		if(numOfCharsMatch == 0) {
 			filterDictionary(word);
 			return;
 		}
 		Set<String> permutations = getPermutations(word, numOfCharsMatch);
+		Set<String> largerPermuations = getLargerPermutations(word, numOfCharsMatch);
 		Iterator<String> itr = dictionary.iterator();
 		while(itr.hasNext()) {
 			String dictWord = itr.next();
-			if(!isPresent(permutations, dictWord)) {
+			if(!isPresent(permutations, largerPermuations, dictWord)) {
 				itr.remove();
 			}
 		}
@@ -106,7 +111,15 @@ public class MasterMind {
 		}
 	}
 
-	private boolean isPresent(Set<String> permutations, String dictWord) {
+	private boolean isPresent(Set<String> permutations, Set<String> largerPermuations, String dictWord) {
+		
+		for(String perm : largerPermuations) {
+			String regex = perm.replaceAll("", ".*");
+			if(dictWord.matches(regex)) {
+				return false;
+			}
+		}
+		
 		for(String perm : permutations) {
 			String regex = perm.replaceAll("", ".*");
 			if(dictWord.matches(regex)) {

@@ -43,6 +43,22 @@ public class Permutations {
 		return words;
 	}
 
+	public static Set<String> permutationLargerFinder(String str, int length) {
+		Set<String> words = new HashSet<String>();
+		for (int i = 0; i < str.length(); i++) {
+			words = addLetter(str.charAt(i), words);
+		}
+		Iterator<String> itr = words.iterator();
+		while (itr.hasNext()) {
+			String s = itr.next();
+			if (s.length() <= length) {
+				itr.remove();
+			}
+		}
+		
+		return words;
+	}
+	
 	public static Set<String> permutationFinder(String str, int length) {
 		Set<String> words = new HashSet<String>();
 		for (int i = 0; i < str.length(); i++) {
