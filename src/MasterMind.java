@@ -80,7 +80,7 @@ public class MasterMind {
 	}
 	
 	private void generateGameWord() {
-		int randomNum =(int)(Math.random() * dictionary.size());
+		int randomNum =(int)(Math.random() * (dictionary.size() - 1));
 		List<String> list = new ArrayList<String>(dictionary);
 		gameWord = list.get(randomNum);
 	}
