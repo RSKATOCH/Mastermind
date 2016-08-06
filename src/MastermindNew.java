@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
-public class MasterMind {
-
+public class MastermindNew {
+	
 	private static List<String> allWords = new ArrayList<String>(); 
 	private Set<String> dictionary = new HashSet<String>();
 	private String gameWord;
@@ -46,6 +46,17 @@ public class MasterMind {
 		return numCommon;
 	}
 	
+	private int commonCharsCount(String word, String gameWord) {
+		String unique = getUnique(word);
+		int numCommon = 0;
+		for(char ch : unique.toCharArray()) {
+			if(gameWord.contains(String.valueOf(ch))) {
+				numCommon++;
+			}
+		}
+		return numCommon;
+	}
+	
 	private boolean isWin(String word) {
 		return word.equals(gameWord);
 	}
@@ -64,62 +75,17 @@ public class MasterMind {
 		return dictionary.iterator().next();
 	}
 	
-	private Set<String> getPermutations(String word, int length) {
-		//System.out.println("Permutaions : " + Permutations.permutationFinder(word, length));
-		return Permutations.permutationFinder(word, length); 
-	}
-	
-	private Set<String> getLargerPermutations(String word, int length) {
-		//System.out.println("Permutaions : " + Permutations.permutationFinder(word, length));
-		return Permutations.permutationLargerFinder(word, length); 
-	}
 	private void filterDictionary(String word, int numOfCharsMatch) {
-		if(numOfCharsMatch == 0) {
-			filterDictionary(word);
-			return;
-		}
-		Set<String> permutations = getPermutations(word, numOfCharsMatch);
-		Set<String> largerPermuations = getLargerPermutations(word, numOfCharsMatch);
 		Iterator<String> itr = dictionary.iterator();
 		while(itr.hasNext()) {
 			String dictWord = itr.next();
-			if(!isPresent(permutations, largerPermuations, dictWord)) {
+			if(commonCharsCount(dictWord, word) != numOfCharsMatch) {
 				itr.remove();
 			}
 		}
 		if(dictionary.contains(word)) {
 			dictionary.remove(word);
 		}
-	}
-	
-	private void filterDictionary(String word) {
-		for(char ch : word.toCharArray()) {
-			Iterator<String> itr = dictionary.iterator();
-			while(itr.hasNext()) {
-				String dictWord = itr.next();
-				if(dictWord.contains(String.valueOf(ch))) {
-					itr.remove();
-				}
-			}
-		}
-	}
-
-	private boolean isPresent(Set<String> permutations, Set<String> largerPermuations, String dictWord) {
-		
-		for(String perm : largerPermuations) {
-			String regex = perm.replaceAll("", ".*");
-			if(dictWord.matches(regex)) {
-				return false;
-			}
-		}
-		
-		for(String perm : permutations) {
-			String regex = perm.replaceAll("", ".*");
-			if(dictWord.matches(regex)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	private boolean isValid(String word) {
@@ -133,7 +99,7 @@ public class MasterMind {
 	}
 	
 	public static void main(String[] args) throws NumberFormatException, Exception {
-		MasterMind game = new MasterMind();
+		MastermindNew game = new MastermindNew();
 		game.readFile(args[0]);
 		game.getWordSet(Integer.parseInt(args[1]));
 		Scanner sc = new Scanner(System.in);
@@ -167,7 +133,7 @@ public class MasterMind {
 			}
 			
 			game.filterDictionary(compGuessWord, Integer.parseInt(numOfCharsMatch));	
-			//System.out.println(game.dictionary.size());
+			System.out.println(game.dictionary.size());
 			System.out.println();
 			
 		}while(!game.isWin(word));
