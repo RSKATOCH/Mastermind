@@ -12,3 +12,7 @@ update 10:00AM
 - Tested one sided (user guesses computer's word) functionality
 - Second side filter code being worked on.
 
+update 11:30AM
+- Added Second side functionality
+- Tested correctness of play
+- To improve smartness of the computer
