@@ -16,3 +16,8 @@ update 11:30AM
 - Added Second side functionality
 - Tested correctness of play
 - To improve smartness of the computer
+
+update 11:45AM
+- Added function to remove larger permutations
+- Improved smartness of program by removing larger permutations when provided with number of characters that match in guess word
+
